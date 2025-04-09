@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Movie Recommendaion System</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- Auto Complete -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/css/autoComplete.min.css">
+
+  <!-- External CSS -->
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='style.css') }}">
+
+  <script type="text/javascript">
+    var films = {{suggestions|tojson}};
+    $(document).ready(function(){
+      $("#myModal").modal('show');
+    });
+  </script>
+</head>
+
+<body id="content" style="font-family: 'Noto Sans JP', sans-serif;">
+<div class="body-content">
+	<div class="ml-container" style="display: block;">
+		<a href="{{ url_for('home') }}" target="_self" class="films-corner" title="Home Page">
+		      <svg data-toggle="tooltip"
+		      data-placement="left" width="100" height="100" viewBox="0 0 250 250"
+			style="fill:#e50914; color:#fff; position: fixed;z-index:100; top: 0; border: 0; right: 0; transform: translate(330px, 300px) scale(7);" aria-hidden="true">
+      <!-- the paths of the movie icon -->
+      <path
+      d="M6 7C5.44772 7 5 7.44772 5 8C5 8.55228 5.44772 9 6 9C6.55228 9 7 8.55228 7 8C7 7.44772 6.55228 7 6 7Z"
+      fill="currentColor"
+      />
+      <path
+        d="M17 8C17 7.44772 17.4477 7 18 7C18.5523 7 19 7.44772 19 8C19 8.55228 18.5523 9 18 9C17.4477 9 17 8.55228 17 8Z"
+        fill="currentColor"
+      />
+      <path
+        d="M6 11C5.44772 11 5 11.4477 5 12C5 12.5523 5.44772 13 6 13C6.55228 13 7 12.5523 7 12C7 11.4477 6.55228 11 6 11Z"
+        fill="currentColor"
+      />
+      <path
+        d="M17 12C17 11.4477 17.4477 11 18 11C18.5523 11 19 11.4477 19 12C19 12.5523 18.5523 13 18 13C17.4477 13 17 12.5523 17 12Z"
+        fill="currentColor"
+      />
+      <path
+        d="M6 15C5.44772 15 5 15.4477 5 16C5 16.5523 5.44772 17 6 17C6.55228 17 7 16.5523 7 16C7 15.4477 6.55228 15 6 15Z"
+        fill="currentColor"
+      />
+      <path
+        d="M17 16C17 15.4477 17.4477 15 18 15C18.5523 15 19 15.4477 19 16C19 16.5523 18.5523 17 18 17C17.4477 17 17 16.5523 17 16Z"
+        fill="currentColor"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M4 3C2.34315 3 1 4.34315 1 6V18C1 19.6569 2.34315 21 4 21H20C21.6569 21 23 19.6569 23 18V6C23 4.34315 21.6569 3 20 3H4ZM20 5H4C3.44772 5 3 5.44772 3 6V18C3 18.5523 3.44772 19 4 19H20C20.5523 19 21 18.5523 21 18V6C21 5.44772 20.5523 5 20 5Z"
+        fill="currentColor"
+      />
+  		  </svg>
+		    </a>
+        
+    <center><h1 class="app-title">Hi! <i style="color: #fff;">{{username}}</i> <br> Movie Recommendation System</h1></center>
+    <div class="form-group shadow-textarea" style="margin-top: 30px;text-align: center;color: white;">
+        <input type="text" name="movie" class="movie form-control" id="autoComplete" autocomplete="off" placeholder="Enter the Movie Name" style="background-color: #ffffff;border-color:#ffffff;width: 60%;color: #181818" required="required" />
+        <br>
+    </div>
+
+    <div class="form-group" style="text-align: center;">
+      <button class="btn btn-primary btn-block movie-button" style="background-color: #e50914;text-align: center;border-color: #e50914;width:120px;" disabled="true" >Enter</button><br><br>
+    </div>
+
+  </div>
+	</div>
+
+  <div id="loader" class="text-center">
+  </div>
+
+  <div class="fail">
+    <center><h3>Sorry! The movie you requested is not in our database. 
+    Please check the spelling or try with other movies!</h3></center>
+  </div>
+
+	<div class="results">
+    <center>
+      <h2 id="name" class="text-uppercase"></h2>
+    </center>
+	</div>  
+
+  {% if movie_cards|length > 1 %}
+  <div class="container"> 
+    <div class="movie" style="color: #E8E8E8;">
+      <center><h2 style="font-family: 'Rowdies', cursive;"><strong>Recommended for you</strong></h5></center>
+    </div>
+
+    <div class="movie-content">
+      {% for poster, details in movie_cards.items() %}
+        <div class="card" style="width: 14rem;" title="{{details[0]}}" onclick="recommendcard({{details[3]}})">
+          <div class="imghvr">
+            <img class="card-img-top" height="360" width="240" alt="{{details[0]}} - poster" src={{poster}}>
+            <div class="card-img-overlay" >
+              <span class="card-text" style="font-size:15px;background: #000000b8;color:white;padding:2px 5px;border-radius: 10px;">
+                <span class="fa fa-star checked">&nbsp; {{details[2]}}/5</span>
+              </span>
+            </div>
+            <div class=".card-img-overlay" style="position: relative;">
+              <span class="card-text" style="font-size:15px;position:absolute;bottom:20px;left:15px;background: #000000b8;color:white;padding: 5px;border-radius: 10px;">{{details[1]}}</span>
+            </div>
+            <figcaption class="fig">
+              <button class="card-btn btn btn-danger"> Click Me </button>
+            </figcaption>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title" style="font-family: 'Rowdies', cursive;font-size: 17px;">{{details[0]|upper}} 
+              <br>
+            </h5>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    </div>
+  {% endif %}
+
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel3" aria-hidden="true">
+    <div class="modal-dialog modal-md" role="document">
+      <div class="modal-content">
+        <div class="modal-header" style="background-color: #e50914;color: white;">
+          <h5 class="modal-title" id="exampleModalLabel3">Hey there, <b>{{username}}</b>!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true" style="color: white">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>If you can't find the movie you're searching for through auto-suggestions while typing, there's no need to worry. Simply type the name of the movie and press "enter". Even if you make some typos, it should still work fine.</p>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Let's go!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+	
+	<footer class="footer">
+    <br/> 
+    <div class="social" style="margin-bottom: 8px">
+    <p>IERG4998-4999 Project © 2023-2024 Copyright Jimmi Pang</p>
+  </div>
+  </footer>
+	</div>
+	
+	<script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/js/autoComplete.min.js"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='autocomplete.js')}}"></script>
+
+  <script type="text/javascript" src="{{url_for('static', filename='recommend.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+</html>

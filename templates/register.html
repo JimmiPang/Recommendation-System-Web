@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Register</h2>
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul class="flash-messages">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+<form method="POST" action="{{ url_for('register') }}">
+    {{ form.csrf_token }}
+    {{ form.username.label }} {{ form.username }}
+    {{ form.email.label }} {{ form.email }}
+    {{ form.password.label }} {{ form.password }}
+    {{ form.confirm_password.label }} {{ form.confirm_password }}
+
+    <h2>Genre Preferences</h2>
+    <div style="display: flex;">
+        <div style="flex: 1;">
+            {% for genre in genres[:genres|length//2] %}
+                <div style="margin-bottom: 10px;">
+                    <input type="checkbox" name="genre_preferences" value="{{ genre }}">
+                    <label>{{ genre }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <div style="flex: 1;  margin-left: -1200px;">
+            {% for genre in genres[genres|length//2:] %}
+                <div style="margin-bottom: 10px;">
+                    <input type="checkbox" name="genre_preferences" value="{{ genre }}">
+                    <label>{{ genre }}</label>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <h2>Please rate 5 Movies</h2>
+    <div class="form-group">
+        {{ form.movie1_rating.label }}
+        {{ form.movie1_rating(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.movie2_rating.label }}
+        {{ form.movie2_rating(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.movie3_rating.label }}
+        {{ form.movie3_rating(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+        {{ form.movie4_rating.label }}
+        {{ form.movie4_rating(class="form-control") }}
+    </div>
+    
+    <div class="form-group">
+        {{ form.movie5_rating.label }}
+        {{ form.movie5_rating(class="form-control") }}
+    </div>    
+    {{ form.submit }}
+</form>
+{% endblock %}
